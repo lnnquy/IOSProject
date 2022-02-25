@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator - App Rao Vat</title>
+    <link rel="stylesheet" href="./layout.css">
+    <script src="./jquery.js"></script>
+    <script src="./js/ajax.js"></script>
+</head>
+<body>
+    <div class="admin">
+        <header class="admin__header">
+          <a href="#" class="logo">
+            <h2>Admin Rao Vặt App</h2>
+          </a>
+          <div class="toolbar">
+            <h1><%- header %></h1>
+          </div>
+        </header>
+        <nav class="admin__nav">
+          <ul class="menu">
+            <li class="menu__item">
+              <a class="menu__link" href="#">User</a>
+            </li>
+            <li class="menu__item">
+              <a class="menu__link" href="./city">City</a>
+            </li>
+            <li class="menu__item">
+              <a class="menu__link" href="#">Token</a>
+            </li>
+            <li class="menu__item">
+              <a class="menu__link" href="./category">Category</a>
+            </li>
+            <li class="menu__item">
+              <a class="menu__link" href="./status">Post Status</a>
+            </li>
+            <li class="menu__item">
+              <a class="menu__link" href="#">Post</a>
+            </li>
+          </ul>
+        </nav>
+        <main class="admin__main">
+            <%- include(content) %>
+        </main>
+        <footer class="admin__footer">
+          
+          <span>
+            &copy; Lê Nguyễn Ngọc Quý | lnnquy1993@gmail.com | 0907774527.
+          </span>
+        </footer>
+      </div>
+</body>
+</html>

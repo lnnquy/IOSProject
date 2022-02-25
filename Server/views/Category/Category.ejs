@@ -1,0 +1,29 @@
+<script src="./js/ajaxCate.js"></script>
+<div>
+    <img width="100px" height="100px" src="/noimage.png" id="cateImage"/><br/>
+    <div style="margin-top: 32px;" id="formAddCategory">
+        
+        <input type="hidden" id="hid_nameImage"/>
+        <input type="file" id="fileImage"/><br/><br/>
+        <input type="text" id="cateName" placeholder="Tên Category"/><br/><br/>
+        <input type="button" value="Add new" id="btn_AddCate">
+    </div>
+    <div>
+        <ul id="cate_List">
+            <li>...</li>
+        </ul>
+    </div>
+    <img width="100px" height="100px" src="/noimage.png" id="currentImage"/><br/>
+    <div style="margin-top: 8px;" id="formDetailsCategory">
+        <input type="text" disabled id="currentName"/>
+        <input type="button" value="Delete" id="btn_DeleteCate"><br/><br/>
+        <input type="file" id="newFileImage"/><br/><br/>
+        <input type="text" id="newName" placeholder="Tên Category mới"/><br/><br/>
+        <input type="button" value="Update" id="btn_UpdateCate">
+        <input type="hidden" id="hid_newImage"/>
+        <input type="hidden" id="hid_currentImage"/>
+        <input type="hidden" id="hid_IdCate"/>
+    </div>
+    
+    
+</div>
