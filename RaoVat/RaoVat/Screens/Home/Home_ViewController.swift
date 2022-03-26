@@ -17,6 +17,8 @@ class Home_ViewController: UIViewController,UICollectionViewDelegate,UICollectio
     
     var arrPost:[Post] = []
     var arrCate:[Category] = []
+    var arrCity:[City] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -33,6 +35,8 @@ class Home_ViewController: UIViewController,UICollectionViewDelegate,UICollectio
     }
     override func viewWillAppear(_ animated: Bool) {
         loadData()
+        selectedIndex = nil
+        
         self.tabBarController?.tabBar.isHidden = false
         
     }
@@ -42,8 +46,8 @@ class Home_ViewController: UIViewController,UICollectionViewDelegate,UICollectio
         let url = URL(string: Config.URLConnect + "/post/list")
         var req = URLRequest(url: url!)
         req.httpMethod = "POST"
-        let task = URLSession.shared.dataTask(with: req) { (data, response, error) in
-            guard error == nil else {print(error);return}
+        let _ = URLSession.shared.dataTask(with: req) { (data, response, error) in
+            guard error == nil else {print(error ?? "Error task Post List");return}
             guard let data = data else {return}
             
             do {
@@ -54,8 +58,8 @@ class Home_ViewController: UIViewController,UICollectionViewDelegate,UICollectio
                     let url = URL(string: Config.URLConnect + "/category/list")
                     var req = URLRequest(url: url!)
                     req.httpMethod = "POST"
-                    let task = URLSession.shared.dataTask(with: req) { (data, response, error) in
-                        guard error == nil else {print(error);return}
+                    let _ = URLSession.shared.dataTask(with: req) { (data, response, error) in
+                        guard error == nil else {print(error ?? "Error task Category List");return}
                         guard let data = data else {return}
                         
                         do {
@@ -71,9 +75,11 @@ class Home_ViewController: UIViewController,UICollectionViewDelegate,UICollectio
                             
                         }catch let error {print(error.localizedDescription)}
                     }.resume()
+                    
                 }
                 
             }catch let error {print(error.localizedDescription)}
+            
         }.resume()
         
     }
@@ -88,16 +94,75 @@ class Home_ViewController: UIViewController,UICollectionViewDelegate,UICollectio
     
     var selectedIndex:Int?
     
+    func abbreviateNumber(num:Int) -> String {
+        let formatter = NumberFormatter()
+            formatter.minimumFractionDigits = 0
+            formatter.maximumFractionDigits = 2
+        
+        if num < 1000 {
+            return "\(num)"
+        }
+            
+        if num < 1000000 {
+            var n = Double(num);
+            n = Double( floor(n/100)/10 )
+            return "\(n.description) Nghìn"
+        }
+        if num < 1000000000 {
+            var n = Double(num)
+            n = Double( floor(n/100000)/10 )
+            let number = NSNumber(value: n)
+            return "\(formatter.string(from: number)!) Triệu"
+        }
+        var n = Double(num)
+        n = Double( floor(n/100000000)/10 )
+        let number = NSNumber(value: n)
+        return "\(formatter.string(from: number)!) Tỷ"
+    }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == myCView {
             let cell = myCView.dequeueReusableCell(withReuseIdentifier: "HOME_CELL", for: indexPath) as! Home_CollectionViewCell
             cell.lbTitle.text = arrPost[indexPath.row].Title
-            cell.lbPrice.text = arrPost[indexPath.row].Price + " " + "đ"
+            
+            //format number currency
+//            let formatter = NumberFormatter()
+//            formatter.numberStyle = .decimal
+//            formatter.maximumFractionDigits = 2
+//            let number = NSNumber(value: Int(arrPost[indexPath.row].Price)!)
+            cell.lbPrice.text = abbreviateNumber(num: Int(arrPost[indexPath.row].Price)!)
+            
+            //load Image
             let urlImage = Config.URLConnect + "/upload/" + self.arrPost[indexPath.row].Image[0]
             do {
                 let imageData = try Data(contentsOf: URL(string: urlImage)!)
                 cell.imgPost.image = UIImage(data: imageData)
             }catch let error {print(error.localizedDescription)}
+            
+            //load City Name
+            let url = URL(string: Config.URLConnect + "/city/findID")
+            var req = URLRequest(url: url!)
+            req.httpMethod = "POST"
+            let str:String = "id=\(self.arrPost[indexPath.row].City)"
+            let dt = str.data(using: .utf8)
+            req.httpBody = dt
+            let task = URLSession.shared.dataTask(with: req) { (data, response, error) in
+                guard error == nil else {print(error!);return}
+                guard let data = data else {return}
+                do {
+                    guard let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:Any] else {return}
+                    if(json["kq"] as! Int == 1) {
+                        
+                        var city = json["city"] as! [String:Any]
+                        DispatchQueue.main.async {
+                            cell.lbAddress.text = city["Name"] as! String
+                        }
+                        
+                    }
+                    
+
+                }catch let error {print(error.localizedDescription)}
+            }.resume()
+            
             return cell
         }else {
             let cell = cateCV.dequeueReusableCell(withReuseIdentifier: "CATELIST_CV", for: indexPath) as! CateList_CollectionViewCell
@@ -128,14 +193,10 @@ class Home_ViewController: UIViewController,UICollectionViewDelegate,UICollectio
         if (collectionView == myCView) {
             return CGSize(width: self.view.frame.width/2 - 16, height: (self.view.frame.width/2)+8)
         }else {
-            return CGSize(width: 120 , height: 120)
+            return CGSize(width: 100 , height: 100)
         }
         
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-//        return 0
-//    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if (collectionView == myCView) {
@@ -146,7 +207,7 @@ class Home_ViewController: UIViewController,UICollectionViewDelegate,UICollectio
             let str:String = "ID=\(arrPost[indexPath.item]._id)&VIEW=\(String(View))"
             let dt = str.data(using: .utf8)
             req.httpBody = dt
-            let task = URLSession.shared.dataTask(with: req) { (data, response, error) in
+            let _ = URLSession.shared.dataTask(with: req) { (data, response, error) in
                 guard error == nil else {print(error!);return}
                 guard let data = data else {return}
                 do {
@@ -164,6 +225,7 @@ class Home_ViewController: UIViewController,UICollectionViewDelegate,UICollectio
                     
                
             }.resume()
+            
         }else {
             spinerView.isHidden = false
             spinerView.startAnimating()
@@ -175,8 +237,8 @@ class Home_ViewController: UIViewController,UICollectionViewDelegate,UICollectio
             let str:String = "idCate=\(arrCate[indexPath.item]._id)"
             let dt = str.data(using: .utf8)
             req.httpBody = dt
-            let task = URLSession.shared.dataTask(with: req) { (data, response, error) in
-                guard error == nil else {print(error);return}
+            let _ = URLSession.shared.dataTask(with: req) { (data, response, error) in
+                guard error == nil else {print(error ?? "Error task Find Category ID");return}
                 guard let data = data else {return}
                 do {
                     let json = try JSONDecoder().decode(Post_Route.self, from: data)

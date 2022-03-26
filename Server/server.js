@@ -19,6 +19,7 @@ mongoose.connect(strCon, {useNewUrlParser: true, useUnifiedTopology: true,useFin
     }
 });
 
+
 //Routes
 require("./Routes/FileUpload")(app);
 require("./Routes/Account")(app);
@@ -26,3 +27,4 @@ require("./Routes/City")(app);
 require("./Routes/Category")(app);
 require("./Routes/Status")(app);
 require("./Routes/Post")(app);
+require("./Routes/Home")(app);

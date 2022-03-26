@@ -1,6 +1,18 @@
 const Post = require("../Models/Post");
 
 module.exports = function(app) {
+    app.get("/post",function(req,res){
+        res.render("admin_master",{content:"./Post/Posts.ejs",header:"Post"});
+    });
+    app.post("/listPosts",function(req,res){
+        Post.find(function(err,data){
+            if(err){
+                res.json({kq:0,errMsg:err});
+            }else {
+                res.json({kq:1,list:data});
+            }
+        });
+    });
     app.post("/post/add",function(req,res){
         var newPost = Post({
             Title : req.body.Title,

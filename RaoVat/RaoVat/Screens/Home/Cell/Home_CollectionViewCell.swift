@@ -10,11 +10,14 @@ import UIKit
 
 class Home_CollectionViewCell: UICollectionViewCell {
     
+    @IBOutlet weak var lbAddress: UILabel!
     @IBOutlet weak var imgPost: UIImageView!
     @IBOutlet weak var lbTitle: UILabel!
     @IBOutlet weak var lbPrice: UILabel!
+    
     override func awakeFromNib() {
         imgPost.layer.cornerRadius = 10
 
     }
+
 }

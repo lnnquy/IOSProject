@@ -99,6 +99,7 @@ class Post_ViewController: UIViewController,UITableViewDataSource,UITableViewDel
         myTable.dataSource = self
         myTable.delegate = self
         btnPost.layer.cornerRadius = 8
+        self.view.backgroundColor = .systemYellow
         // Do any additional setup after loading the view.
     }
     override func viewDidAppear(_ animated: Bool) {

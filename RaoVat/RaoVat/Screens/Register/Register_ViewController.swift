@@ -24,6 +24,11 @@ class Register_ViewController: UIViewController, UIImagePickerControllerDelegate
         let tap = UITapGestureRecognizer(target: self, action: #selector(openGalery))
         imgAvatar.addGestureRecognizer(tap)
         imgAvatar.isUserInteractionEnabled = true
+        var bgImage = UIImageView(frame: UIScreen.main.bounds)
+        bgImage.image = UIImage(named: "SigninBG")
+        bgImage.contentMode = .scaleToFill
+        self.view.insertSubview(bgImage, at: 0)
+        
         // Do any additional setup after loading the view.
 //        txtName.text = "Ngoc Quy"
 //        txtEmail.text = "lnnquy1993@gmail.com"

@@ -44,35 +44,33 @@ extension ManagePost_ViewController:ManagePost_Delegate {
 }
 
 class ManagePost_ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
+
     
-    @IBOutlet weak var btnDangBan: UIButton!
-    @IBOutlet weak var btnDaBan: UIButton!
-    var active = true
+    @IBOutlet weak var viewActive: UIView!
     var arrPost:[Post] = []
     var idUser:String = ""
-    @IBOutlet weak var ViewDaBan: UIView!
-    @IBOutlet weak var ViewDangBan: UIView!
     @IBOutlet weak var spinnerView: UIActivityIndicatorView!
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var myTable: UITableView!
     override func viewDidLoad() {
-        ViewDaBan.isHidden = true
         spinnerView.isHidden = true
-        btnDaBan.setTitleColor(.lightGray, for: .normal)
         myTable.dataSource = self
         myTable.delegate = self
+        viewActive.backgroundColor = .systemYellow
+        self.view.backgroundColor = .systemYellow
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
-    override func viewDidAppear(_ animated: Bool) {
+    
+    override func viewWillAppear(_ animated: Bool) {
+        segmentedControl.selectedSegmentIndex = 0
         self.navigationController?.isNavigationBarHidden = false
         self.tabBarController?.tabBar.isHidden = false
         checkLogin()
     }
-    override func viewWillAppear(_ animated: Bool) {
-        
-    }
     func checkLogin(){
+        idUser = ""
         spinnerView.isHidden = false
         spinnerView.startAnimating()
         let defaults = UserDefaults.standard
@@ -147,13 +145,38 @@ class ManagePost_ViewController: UIViewController,UITableViewDelegate,UITableVie
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return arrPost.count
     }
-       
+    func abbreviateNumber(num:Int) -> String {
+        let formatter = NumberFormatter()
+            formatter.minimumFractionDigits = 0
+            formatter.maximumFractionDigits = 2
+        
+        if num < 1000 {
+            return "\(num)"
+        }
+            
+        if num < 1000000 {
+            var n = Double(num);
+            n = Double( floor(n/100)/10 )
+            return "\(n.description) Nghìn"
+        }
+        if num < 1000000000 {
+            var n = Double(num)
+            n = Double( floor(n/100000)/10 )
+            let number = NSNumber(value: n)
+            return "\(formatter.string(from: number)!) Triệu"
+        }
+        var n = Double(num)
+        n = Double( floor(n/100000000)/10 )
+        let number = NSNumber(value: n)
+        return "\(formatter.string(from: number)!) Tỷ"
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = myTable.dequeueReusableCell(withIdentifier: "MANAGEPOST_CELL") as! ManagePost_TableViewCell
         cell.lbTitle.text = arrPost[indexPath.row].Title
-        cell.lbPrice.text = arrPost[indexPath.row].Price + " " + "đ"
+        cell.lbPrice.text = abbreviateNumber(num: Int(arrPost[indexPath.row].Price)!)
         cell.lbView.text = String(arrPost[indexPath.row].View)
-        cell.btnSelled.isHidden = !self.active
+        cell.btnSelled.isHidden = !arrPost[indexPath.row].Active
         cell.btnSelled.tag = indexPath.row
         cell.delegate = self
         let urlImage = Config.URLConnect + "/upload/" + self.arrPost[indexPath.row].Image[0]
@@ -172,30 +195,21 @@ class ManagePost_ViewController: UIViewController,UITableViewDelegate,UITableVie
         postDetailVC.post = self.arrPost[indexPath.item]
         self.navigationController?.pushViewController(postDetailVC, animated: true)
     }
-    @IBAction func DangBan(_ sender: Any) {
-        btnDangBan.setTitleColor(.black, for: .normal)
-        btnDaBan.setTitleColor(.lightGray, for: .normal)
-        self.active = true
-        ViewDaBan.isHidden = true
-        ViewDangBan.isHidden = false
-        loadData(active: true)
+    
+    @IBAction func ActiveChange(_ sender: Any) {
+        switch segmentedControl.selectedSegmentIndex
+        {
+            case 0 :
+                loadData(active: true)
+                break
+            case 1 :
+                loadData(active: false)
+                break
+            default:
+                break
+            
+        }
     }
-    @IBAction func DaBan(_ sender: Any) {
-        btnDaBan.setTitleColor(.black, for: .normal)
-        btnDangBan.setTitleColor(.lightGray, for: .normal)
-        self.active = false
-        ViewDaBan.isHidden = false
-        ViewDangBan.isHidden = true
-        loadData(active: false)
-    }
-    /*
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

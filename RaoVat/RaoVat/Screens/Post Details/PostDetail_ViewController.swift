@@ -21,12 +21,37 @@ class PostDetail_ViewController: UIViewController,UITableViewDataSource,UITableV
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.isNavigationBarHidden = false
         btnChat.layer.cornerRadius = 20
-        viewChat.layer.cornerRadius = 30
+        
         myTable.dataSource = self
         myTable.delegate = self
+        self.view.backgroundColor = .systemYellow
         // Do any additional setup after loading the view.
     }
-    
+    func abbreviateNumber(num:Int) -> String {
+        let formatter = NumberFormatter()
+            formatter.minimumFractionDigits = 0
+            formatter.maximumFractionDigits = 2
+        
+        if num < 1000 {
+            return "\(num)"
+        }
+            
+        if num < 1000000 {
+            var n = Double(num);
+            n = Double( floor(n/100)/10 )
+            return "\(n.description) Nghìn"
+        }
+        if num < 1000000000 {
+            var n = Double(num)
+            n = Double( floor(n/100000)/10 )
+            let number = NSNumber(value: n)
+            return "\(formatter.string(from: number)!) Triệu"
+        }
+        var n = Double(num)
+        n = Double( floor(n/100000000)/10 )
+        let number = NSNumber(value: n)
+        return "\(formatter.string(from: number)!) Tỷ"
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 5
     }
@@ -42,7 +67,14 @@ class PostDetail_ViewController: UIViewController,UITableViewDataSource,UITableV
         case 1:
             let cell = myTable.dequeueReusableCell(withIdentifier: "CONTENTPOST_CELL") as! ContentPost_TableViewCell
             cell.lbTitlePost.text = post!.Title
-            cell.lbPrice.text = post!.Price + " " + "đ"
+//            //format number currency
+//            let formatter = NumberFormatter()
+//            formatter.numberStyle = .decimal
+//            formatter.maximumFractionDigits = 2
+//            formatter.decimalSeparator = "."
+//            let number = NSNumber(value: Int(self.post!.Price)!)
+            cell.lbPrice.text = abbreviateNumber(num: Int(self.post!.Price)!)
+            
             cell.loadCate(id: post!.Category)
             cell.loadStatus(id: post!.Status)
             return cell

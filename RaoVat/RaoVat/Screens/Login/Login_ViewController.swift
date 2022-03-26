@@ -24,8 +24,6 @@ class Login_ViewController: UIViewController {
         self.navigationController?.isNavigationBarHidden = true
         btnLogin.layer.cornerRadius = 10
         spinnerView.isHidden = true
-//        txtEmail.text = "lnnquy1993@gmail.com"
-//        txtPassword.text = "12345678"
         // Do any additional setup after loading the view.
     }
     
@@ -55,24 +53,24 @@ class Login_ViewController: UIViewController {
                     if json["kq"] as! Int == 1 {
                         self.spinnerView.isHidden = true
                         //Save Token
-                        
+
                         let defaults = UserDefaults.standard
                         defaults.set(json["token"], forKey: "UserToken")
                         let sb = UIStoryboard(name: "Main", bundle: nil)
                         if self.tabBarController?.selectedIndex == 3 {
-                            
+
                             let dashboardVC = sb.instantiateViewController(withIdentifier: "DASHBOARD") as! Dashboard_ViewController
                             self.navigationController?.pushViewController(dashboardVC, animated: true)
                         }else if self.tabBarController?.selectedIndex == 1 {
-                            
+
                             let postVC = sb.instantiateViewController(withIdentifier: "POST") as! Post_ViewController
                             self.navigationController?.pushViewController(postVC, animated: true)
                         }else if self.tabBarController?.selectedIndex == 2 {
-                            
+
                             let managePostVC = sb.instantiateViewController(withIdentifier: "MANAGEPOST") as! ManagePost_ViewController
                             self.navigationController?.pushViewController(managePostVC, animated: true)
                         }
-                        
+
                     }else {
                         let alert = UIAlertController(title: "Error", message: "Email hoặc Password không chính xác. ", preferredStyle: UIAlertController.Style.alert)
                         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.destructive, handler: { (cancel) in

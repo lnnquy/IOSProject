@@ -1,5 +1,6 @@
 $(document).ready(function(){
-    var url = "http://localhost:3000";
+    const url = "http://localhost:3000";
+
     $.post(url+"/category/list",function(data){
         if(data.kq==1){
             $("#cate_List").html("");

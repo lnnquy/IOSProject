@@ -8,6 +8,18 @@ const jwt = require('jsonwebtoken');
 const privateKey = "ngocquy123"
 
 module.exports = function(app) {
+    app.get("/user",function(req,res){
+        res.render("admin_master",{content:"./User/Users.ejs",header:"Users"});
+    });
+    app.post("/listUsers",function(req,res){
+        User.find(function(err,data){
+            if (err) {
+                res.json({kq : 0, errMsg : "List User Error"});
+            }else {
+                res.json({kq:1,list:data})
+            }
+        });
+    });
     app.post("/verifyToken",function(req,res) {
         Token.findOne({Token:req.body.token,State:true}).select("_id").lean().then(result=>{
             if(!result) {

@@ -9,6 +9,6 @@
 import Foundation
 
 struct Config {
-    static public var URLConnect = "http://192.168.0.102:3000"
+    static public var URLConnect = "http://192.168.0.123:3000"
     
 }

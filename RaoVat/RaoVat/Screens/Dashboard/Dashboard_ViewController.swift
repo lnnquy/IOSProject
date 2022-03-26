@@ -84,8 +84,11 @@ class Dashboard_ViewController: UIViewController {
                                             do {
                                                 let imageData = try Data(contentsOf: URL(string: urlImage)!)
                                                 self.imgAvatar.image = UIImage(data: imageData)
-                                                self.spinnerView.isHidden = true
-                                            }catch let error {print(error.localizedDescription)}
+                                            }catch let error {
+                                                print(error.localizedDescription)
+                                                self.imgAvatar.image = UIImage(named: "profile")
+                                            }
+                                            self.spinnerView.isHidden = true
                                         }
                                         
                                     }
