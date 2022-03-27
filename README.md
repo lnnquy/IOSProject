@@ -2,6 +2,6 @@
 
 - App về chuyên trang Rao Vặt, sử dụng Swift, NodeJS, MongoDB
 
-- **Demo Client : ** 
+- **Demo : ** 
 
-https://drive.google.com/file/d/1OcfkViOeAp3f_L-mlBgyh6c6Gl9Ii3M2/view?usp=sharing
+https://youtu.be/bYHVJO1S8lI
